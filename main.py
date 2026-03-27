@@ -58,42 +58,56 @@ def quit_game():
 def play_game():
     global restart, quit_game_flag
     game_is_on = True
+    game_active = False
+    l_scoreboard.instructions()
+
+    def start_round():
+        nonlocal game_active
+        if not game_active:
+            game_active = True
+            l_scoreboard.clear_instructions()
+            
+    screen.onkey(start_round, "space")
+
+    # Game Loop
     while game_is_on:
         r_paddle.move()  # Tell the paddle to check it's state and move
         l_paddle.move()
 
-        # Right Paddle collision logic
-        if r_paddle.distance(ball) < 55 and ball.xcor() > 320 and ball.x_move > 0:
-            ball.bounce_x()
-            ball.increase_speed()
+        if game_active:
+            # Right Paddle collision logic
+            if r_paddle.distance(ball) < 55 and ball.xcor() > 320 and ball.x_move > 0:
+                ball.bounce_x()
+                ball.increase_speed()
 
-        if l_paddle.distance(ball) < 55 and ball.xcor() < -320 and ball.x_move < 0:
-            ball.bounce_x()
-            ball.increase_speed()
+            if l_paddle.distance(ball) < 55 and ball.xcor() < -320 and ball.x_move < 0:
+                ball.bounce_x()
+                ball.increase_speed()
 
-        # Score Logic
-        if ball.xcor() > 400:  # Ball went off right side
-            l_scoreboard.increase_score()
-            ball.reset_direction()
+            # Score Logic
+            if ball.xcor() > 400:  # Ball went off right side
+                l_scoreboard.increase_score()
+                ball.reset_direction()
 
-        if ball.xcor() < -400:  # Ball went off left side
-            r_scoreboard.increase_score()
-            ball.reset_direction()
+            if ball.xcor() < -400:  # Ball went off left side
+                r_scoreboard.increase_score()
+                ball.reset_direction()
 
-        # Win/Lose Logic
-        if r_scoreboard.score == 5:
-            game_is_on = False  # Stop the game loop on win
-            r_scoreboard.game_over("Right Player")
-            screen.onkey(reset_game, "r")
-            screen.onkey(quit_game, "q")  # Bind 'q' to quit after win
+            # Win/Lose Logic
+            if r_scoreboard.score == 5:
+                game_is_on = False  # Stop the game loop on win
+                r_scoreboard.game_over("Right Player")
+                screen.onkey(reset_game, "r")
+                screen.onkey(quit_game, "q")  # Bind 'q' to quit after win
 
-        if l_scoreboard.score == 5:
-            game_is_on = False  # Stop the game loop on win
-            l_scoreboard.game_over("Left Player")
-            screen.onkey(reset_game, "r")
-            screen.onkey(quit_game, "q")  # Bind 'q' to quit after win
+            if l_scoreboard.score == 5:
+                game_is_on = False  # Stop the game loop on win
+                l_scoreboard.game_over("Left Player")
+                screen.onkey(reset_game, "r")
+                screen.onkey(quit_game, "q")  # Bind 'q' to quit after win
 
-        ball.move()
+            ball.move()
+            
         time.sleep(0.05)
         screen.update()
 
@@ -105,3 +119,4 @@ while not quit_game_flag:
     while not restart and not quit_game_flag:
         time.sleep(0.01)  # Small delay to prevent busy waiting
         screen.update()  # Keep the screen responsive to key presses
+

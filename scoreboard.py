@@ -59,7 +59,7 @@ class Scoreboard(Turtle):
             winner (str): The winner of the game.
         """
         self.goto(0, 0)
-        self.write(f"Winner: {winner}, press \'r' to restart or \'q' to quit", move=False, font=FONT, align="center")
+        self.write(f"Winner: {winner}, press \'r' to restart \n or \'q' to quit", move=False, font=FONT, align="center")
 
     def increase_score(self):
         """
@@ -79,3 +79,12 @@ class Scoreboard(Turtle):
         line.shapesize(stretch_wid=40, stretch_len=0.5, outline=0)
         line.penup()
         line.goto(0, 0)
+    
+    def instructions(self):
+        self.goto(0, 100)
+        self.write("Left player: W/S \nRight player: Up/Down \n\nPress SPACE to start", move=False, font=("Courier", 18, "bold"), align="center")
+        self.goto(self.position)
+        
+    def clear_instructions(self):
+        self.clear()
+        self.update_scoreboard()
